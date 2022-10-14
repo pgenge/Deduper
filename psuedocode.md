@@ -70,7 +70,8 @@ Counting CIGAR String, this deduper will be using inclusive numbering for the ba
 Parse CIGAR string function
 
 def cigstr(str, bitstrand(float))
-'''This function takes the CIGAR String and accounts for the strand from a SAM file and parses the symbols M, I, D, N, and S to determine the actual 5' start position on the reference of our aligned read'''
+'''This function takes the CIGAR String and accounts for the strand from a SAM file and parses the symbols 
+M, I, D, N, and S to determine the actual 5' start position on the reference of our aligned read'''
 
 Test case:
 minus strand, input "5S10M1024N" output "1034" 
