@@ -32,10 +32,12 @@ Read in sorted SAM File.
 Loop over each line.
 Save each column of interest (QNAME, RNAME, POS, FLAG) as a variable.
 Use the bitwise flag mapped/unmapped function to determine if the read was mapped to the genome.
-Use the cigar string parsing function and pass it the cigar string and bitwise flag strand function to determine the strand that the read is on/mapped to 
+Use the cigar string parsing function and pass it the cigar string and bitwise flag strand function to 
+determine the strand that the read is on/mapped to 
 and adjust the position of the read on the reference to be the "true" position
 accounting for soft clipping, skipped regions, deletions, insertions, and matches and mismatches.
-For each strand that is unique add the QNAME (UMI), RNAME (chr#), Adjusted POSITION, FLAG to a tuple and add that tuple to a set.
+For each strand that is unique add the QNAME (UMI), RNAME (chr#), 
+Adjusted POSITION, FLAG to a tuple and add that tuple to a set.
 For each strand that is not unique, we will discard the read interpreting it as a PCR duplicate.
 Lastly, we'll write out the contents of our set to a new deduped sam file.
 
