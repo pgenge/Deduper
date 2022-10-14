@@ -7,20 +7,19 @@ These duplicates can introduce bias into our data and artificially inflate the c
 Another challenge will be having to adjust the position of the aligned read to 
 the reference based on the cigar string.
 
-- Write examples:
-    - Include a properly formated sorted input sam file
+- Write example test cases:
 
-Potential test cases to include in the sam file test input
+- Potential test cases to include in the sam file test input
 
-same UMIs duplicate on plus and minus
-same UMIs and everything else soft slipping plus and minus and duplicate
-reads with the different UMIs with the same pos, strand, and chromosome
-different chr same everything else and
-same chr but everything else different
-different pos same everything else
-same pos different everything else
-different strand same everything else
-same strand different everything else
+    - same UMIs duplicate on plus and minus
+    - same UMIs and everything else soft slipping plus and minus and duplicate
+    - reads with the different UMIs with the same pos, strand, and chromosome
+    - different chr same everything else and
+    - same chr but everything else different
+    - different pos same everything else
+    - same pos different everything else
+    - different strand same everything else
+    - same strand different everything else
 
 
 - Develop your algorithm using pseudocode
