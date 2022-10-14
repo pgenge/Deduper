@@ -1,6 +1,11 @@
 - Define the problem
 
-We need to differentiate our reads from PCR duplication artifacts vs unique transcript reads to accurately reflect transcript abundace in our samples. The problem with PCR duplicates is that they will have the same alignment position on the same chromosome on the same strand with the same start/stop, and UMI. We need to find a way to remove these duplicates because these are identical molecules that are from the same transcript. These duplicates can introduce bias into our data and artificially inflate the coverage of one transcript over the other. Another challenge will be having to adjust the position of the aligned read to the reference based on the cigar string.
+We need to differentiate our reads from PCR duplication artifacts vs unique transcript reads to accurately reflect transcript abundace in our samples. 
+The problem with PCR duplicates is that they will have the same alignment position on the same chromosome on the same strand with the same start/stop, and UMI. 
+We need to find a way to remove these duplicates because these are identical molecules that are from the same transcript. 
+These duplicates can introduce bias into our data and artificially inflate the coverage of one transcript over the other. 
+Another challenge will be having to adjust the position of the aligned read to 
+the reference based on the cigar string.
 
 - Write examples:
     - Include a properly formated sorted input sam file
@@ -10,12 +15,12 @@ Potential test cases to include in the sam file test input
 same UMIs duplicate on plus and minus
 same UMIs and everything else soft slipping plus and minus and duplicate
 reads with the different UMIs with the same pos, strand, and chromosome
-different chr same everything else and duplicate
-same chr but everything else different and duplicate
-different pos same everything else and duplicate
-same pos different everything else and duplicate
-different strand same everything else and duplicate
-same strand different everything else and duplicate
+different chr same everything else and
+same chr but everything else different
+different pos same everything else
+same pos different everything else
+different strand same everything else
+same strand different everything else
 
 
 - Develop your algorithm using pseudocode
@@ -28,7 +33,9 @@ Read in sorted SAM File.
 Loop over each line.
 Save each column of interest (QNAME, RNAME, POS, FLAG) as a variable.
 Use the bitwise flag mapped/unmapped function to determine if the read was mapped to the genome.
-Use the cigar string parsing function and pass it the cigar string and bitwise flag strand function to determine the strand that the read is on/mapped to and adjust the position of the read on the reference to be the "true" position accounting for soft clipping, skipped regions, deletions, insertions, and matches and mismatches.
+Use the cigar string parsing function and pass it the cigar string and bitwise flag strand function to determine the strand that the read is on/mapped to 
+and adjust the position of the read on the reference to be the "true" position
+accounting for soft clipping, skipped regions, deletions, insertions, and matches and mismatches.
 For each strand that is unique add the QNAME (UMI), RNAME (chr#), Adjusted POSITION, FLAG to a tuple and add that tuple to a set.
 For each strand that is not unique, we will discard the read interpreting it as a PCR duplicate.
 Lastly, we'll write out the contents of our set to a new deduped sam file.
