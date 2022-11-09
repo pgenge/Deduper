@@ -211,4 +211,4 @@ print(f'Number of Duplicates: {pcr_dupe}') #test file expected:21
 print(f'Number of Invalid UMIs found: {invalidUMI}') #test file expected:1
 
 #command to get stats per chromosome on C1_SE_uniqAlign.sorted.sam
-# cat deduped_C1_SE_uniqAlign.sorted.sam | grep -v '^@' | awk {print $3} | uniq -c | sort -k1,1 -V
+# cat deduped_C1_SE_uniqAlign.sorted.sam | grep -v '^@' | awk '{print $3}' | uniq -c | sort -k2 -V
