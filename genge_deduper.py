@@ -8,7 +8,7 @@
   #samtools sort C1_SE_uniqAlign.sam -o C1_SE_uniqAlign.sorted.sam
 
 #command to run on C1_SE_uniqAlign.sorted.sam
-  #./scripts/genge_deduper.py -f C1_SE_uniqAlign.sorted.sam -u STL96.txt -o deduped_C1_SE_uniqAlign.sorted.sam
+  #./genge_deduper.py -f C1_SE_uniqAlign.sorted.sam -u STL96.txt -o deduped_C1_SE_uniqAlign.sorted.sam
 
 #import all required modules
 import argparse
@@ -95,7 +95,7 @@ def parsecigar_adjustpos(cigar, strand, samposition):
     if strand == 'plus':
       #if it is a  plus strand and has an S on the left side (indicating soft clipping left)
       if 'S' in cigar:
-        S = re.findall(r'^([0-9]+)S+', cigar)
+        S = re.findall(r'^([0-9]+)S', cigar)
         #check if the list has anything in it and if it does make the integer "softclip" = to the the value of the soft clipping
         if len(S) > 0:
           softclip = int(S[0])
@@ -108,8 +108,8 @@ def parsecigar_adjustpos(cigar, strand, samposition):
     #if it is the minus strand
     else:
     #check for right soft clipping, if there is right soft clipping set the integer "softclip" to that value, if not set to 0
-      if 'S' in cigar[-1]:
-        S = re.findall(r'([0-9]+)S', cigar)
+      if 'S' in cigar:
+        S = re.findall(r'([0-9]+)S$', cigar)
         if len(S) > 0:
           softclip = int(S[0])
         else:
@@ -149,7 +149,7 @@ cigarstr = 5
 umi_index = 7
 
 #chromosomes seen to track such that we can clear the unique_read set based on whether that chr has been seen or not
-chr_seen = ''
+# chr_seen = ''
 
 #dedupe
 while True:
@@ -173,27 +173,28 @@ while True:
     invalidUMI += 1
     invalid_umi_file.write(f'{line}\n')
   #grab the chromosome number of the read and check if it has not been seen, if it hasn't already been seen clear the unique_reads set to save memory
+    # else:
+    #   chr = samcols[rname]
+  #   if chr != chr_seen:
+  #     chr_seen = chr
+  #     unique_reads.clear()
+    #if the read has a valid UMI, check the strand of the read to adjust the position of the read to the reference
   else:
     chr = samcols[rname]
-    if chr != chr_seen:
-      chr_seen = chr
-      unique_reads.clear()
-    #if the read has a valid UMI, check the strand of the read to adjust the position of the read to the reference
-    else:
-      strand = whichstrand(samcols[bitflag])
+    strand = whichstrand(samcols[bitflag])
       #capture the cigar string from the sam file columns
-      cigar = samcols[cigarstr]
-      #adjust the position based on strand (plus or minus), cigar string parsing, and left-most-mapped position as seen in the original sam file
-      position = parsecigar_adjustpos(cigar, strand, int(samcols[pos]))
-      #add only UNIQUE records to the unique_reads set, increment the count of unique_reads, and write out to a new file of only unique reads
-      if (umi, strand, position) not in unique_reads:
-        unique_reads.add((umi, strand, position))
-        not_dupe += 1
-        deduped.write(f'{line}\n')
-      #otherwise increment the counter for pcr duplicates and write out to a file
-      else:
-        pcr_dupe += 1
-        pcr_duplicates.write(f'{line}\n')
+    cigar = samcols[cigarstr]
+    #adjust the position based on strand (plus or minus), cigar string parsing, and left-most-mapped position as seen in the original sam file
+    position = parsecigar_adjustpos(cigar, strand, int(samcols[pos]))
+    #add only UNIQUE records to the unique_reads set, increment the count of unique_reads, and write out to a new file of only unique reads
+    if (umi, strand, chr, position) not in unique_reads:
+      unique_reads.add((umi, strand, chr, position))
+      not_dupe += 1
+      deduped.write(f'{line}\n')
+    #otherwise increment the counter for pcr duplicates and write out to a file
+    else:
+      pcr_dupe += 1
+      pcr_duplicates.write(f'{line}\n')
 
 
 #close files
